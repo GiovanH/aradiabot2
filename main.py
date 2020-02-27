@@ -18,7 +18,6 @@ os.environ["consumer_secret"] = consumer_secret
 os.environ["access_token"] = access_token
 os.environ["access_token_secret"] = access_token_secret
 os.environ["env_name"] = "AAA"
-os.environ["callback_url"] = callback_url
 
 import twitivity
 
@@ -81,6 +80,9 @@ class StreamEvent(twitivity.Event):
         self.fslock = Lock()
         for screen_name in whitelist_recognize_dm_commands:
             self.api.create_friendship(screen_name=screen_name)
+
+    def listen(self) -> None:
+        self._server.run(host="0.0.0.0", port=5000)
 
     def on_data(self, data: json) -> None:
         if data.get("direct_message_events"):
@@ -268,7 +270,7 @@ if __name__ == "__main__":
     # threading.Thread(target=refreshWebhook, args=(os.environ["callback_url"],)).start()
 
     logger.info(f"Queueing webhook refresh process")
-    threading.Thread(target=refreshWebhook, args=(os.environ["callback_url"], 2)).start()
+    threading.Thread(target=refreshWebhook, args=(os.environ["callback_url"], 5)).start()
 
     stream_event = StreamEvent(api)
     logger.info(f"Listening to streamer {stream_event} on url {stream_event.CALLBACK_URL}")

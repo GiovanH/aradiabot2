@@ -3,12 +3,11 @@ from snip.stream import TriadLogger
 # import tweepy
 import time
 
-from config import consumer_key, consumer_secret, access_token, access_token_secret, env_name
+from config import consumer_key, consumer_secret, access_token, access_token_secret
 os.environ["consumer_key"] = consumer_key
 os.environ["consumer_secret"] = consumer_secret
 os.environ["access_token"] = access_token
 os.environ["access_token_secret"] = access_token_secret
-os.environ["env_name"] = env_name
 
 import twitivity
 logger = TriadLogger(__name__)
