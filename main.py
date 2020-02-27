@@ -10,11 +10,6 @@ import subprocess
 from threading import Lock
 from stream_config import *
 
-# import hmac
-# import hashlib
-# import base64
-# from flask import Flask, request
-
 import threading
 
 from config import consumer_key, consumer_secret, access_token, access_token_secret
@@ -41,7 +36,7 @@ A tweetlink can be a full link to a tweet, or a "share"
 """
 
 
-# Api overrides
+# Api override: Allow the use of quick reply options
 def send_direct_message2(self, recipient_id, text, quick_reply_options=None, attachment_type=None, attachment_media_id=None):
     """ Send a direct message to the specified user from the authenticating user """
     json_payload = {'event': {'type': 'message_create', 'message_create': {'target': {'recipient_id': recipient_id}}}}
@@ -86,32 +81,6 @@ class StreamEvent(twitivity.Event):
         self.fslock = Lock()
         for screen_name in whitelist_recognize_dm_commands:
             self.api.create_friendship(screen_name=screen_name)
-
-    # def _get_server(self) -> Flask:
-    #     try:
-    #         app = Flask(__name__)
-
-    #         @app.route(f"/{url_params(url=self.CALLBACK_URL)}", methods=["GET", "POST"])
-    #         def callback() -> json:
-    #             if request.method == "GET":
-    #                 hash_digest = hmac.HMAC(
-    #                     key=os.environ["consumer_secret"].encode("utf-8"),
-    #                     msg=request.args.get("crc_token").encode("utf-8"),
-    #                     digestmod=hashlib.sha256,
-    #                 ).digest()
-    #                 response = {
-    #                     "response_token": "sha256=" + base64.b64encode(hash_digest).decode("ascii")
-    #                 }
-    #                 logger.info(response)
-    #                 return response
-    #             elif request.method == "POST":
-    #                 data = request.get_json()
-    #                 self.on_data(data)
-    #                 return {"code": 200}
-
-    #         return app
-    #     except Exception:
-    #         raise
 
     def on_data(self, data: json) -> None:
         if data.get("direct_message_events"):
